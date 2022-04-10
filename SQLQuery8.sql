@@ -1,33 +1,45 @@
-USE footballDB;
+USE master;
 
+CREATE DATABASE footballAgencyDB;
 
+USE footballAgencyDB;
+
+CREATE TABLE Agents(
+	AgentID INT IDENTITY(1,1) PRIMARY KEY NOT NULL,
+	AgentName VARCHAR(120),
+	Email NVARCHAR(150) NULL,
+	ContactNumber VARCHAR(10) NULL,
+);
 /*A TABLE THAT STORES ALL PLAYERS */
+INSERT INTO Agents
+Values('John', 'jd@gmail.com', '0746579832'),
+('Siya', 'sk@yahoo.com', '0834562272'),
+('Doc', 'dk@aol.com', '0112345673')
+
 
 CREATE TABLE Players(
 	PlayerID INT IDENTITY(1,1) PRIMARY KEY CLUSTERED NOT NULL,
 	LastName VARCHAR(120) NULL,
 	FirstName VARCHAR(120) NULL,
-	Email NVARCHAR(150) NULL,
-	ContactNumber VARCHAR(10) NULL,
 	Nationality VARCHAR(3) NULL,
 	DateOfBirth DATE NULL,
 	Position VARCHAR(2) NULL,
 	Footed VARCHAR(5) NULL,
-	Active VARCHAR(3) NOT NULL
+	Active VARCHAR(3) NOT NULL,
+	AgentID INT FOREIGN KEY REFERENCES Agents(AgentID)
 );
 GO
 
+INSERT INTO Players 
+VALUES ('Leon', 'Zulu', 'RSA', '1980-01-29', 'RW', 'Left', 'Yes',1),
+('Peter', 'Shalulile', 'MAL', '1980-08-30', 'FW', 'Right', 'Yes',2),
+('Melvin', 'Parker',  'RSA', '1982-04-19', 'FW', 'Right', 'Yes',2),
+('Amen', 'Nkala',  'RSA', '1995-05-18', 'LW', 'Left', 'No',3),
+('Bonga', 'Dube',  'RSA', '1984-07-19', 'RW', 'Right', 'No',1),
+('Andile','Dimba', 'RSA','1996-09-20', 'GK', 'Right', 'Yes',2)
 
 INSERT INTO Players 
-VALUES ('Leon', 'Zulu', 'lz@gmail.com', '0841264875', 'RSA', '1980-01-29', 'RW', 'Left', 'Yes'),
-('Peter', 'Shalulile', 'Shalu@gmail.com', '0741264845', 'MAL', '1980-08-30', 'FW', 'Right', 'Yes'),
-('Melvin', 'Parker', 'mp@gmail.com', '0871264890', 'RSA', '1982-04-19', 'FW', 'Right', 'Yes'),
-('Amen', 'Nkala', 'Amen@gmail.com', '0761264845', 'RSA', '1995-05-18', 'LW', 'Left', 'No'),
-('Bonga', 'Dube', 'bd@gmail.com', '0671264770', 'RSA', '1984-07-19', 'RW', 'Right', 'No'),
-('Andile','Dimba','ab@gmail.com', '0738584679', 'RSA','1996-09-20', 'GK', 'Right', 'Yes')
-
-INSERT INTO Players 
-VALUES ('Duncan','Zungu', 'dz@gmail.com', '0824657895', 'RSA','1982-04-04', 'LB', 'Left', 'Yes')
+VALUES ('Duncan','Zungu', 'RSA','1982-04-04', 'LB', 'Left', 'Yes',1)
 
 
 
@@ -75,26 +87,22 @@ CREATE TABLE ActivePlayers(
 GO
 
 
-INSERT INTO ActivePlayers (PlayerID)
-
-SELECT PlayerID
+SELECT *
 	FROM Players
 	WHERE Active = 'Yes';
 GO
 
-
-/*
 INSERT INTO ActivePlayers 
-VALUES(2,2,2020,'Parent team',36, 1450000.00 ),
-(3,3,2019,'Parent team',36, 120000.00 ),
-(4,4,2018,'Parent team',36, 4500000.00 ),
-(6,5,2022,'Loan',12, 90000.00 ),
-(5,5,2022,'Loan',12, 450000.00 ),
-(7,2,2021,'Parent team', 24, 100000)
+VALUES(2,2,'2020-05-09','Parent team',36, 1450000.00 ),
+(3,3,'2019-01-30','Parent team',36, 120000.00 ),
+(4,4,'2018-02-28','Parent team',36, 4500000.00 ),
+(6,5,'2022-04-11','Loan',12, 90000.00 ),
+(5,5,'2022-02-09','Loan',12, 450000.00 ),
+(7,2,'2021-10-01','Parent team', 24, 100000)
 
 GO
 
-*/
+
 
 
 
@@ -177,10 +185,15 @@ GO
 
 CREATE PROCEDURE spUpdateContract @Player INT, @Team INT, @Date Date, @Type VARCHAR(50), @Months INT, @Salary MONEY
 AS
-BEGIN TRANSACTION
-UPDATE ActivePlayers SET TeamID = @Team, DateSigned = @Date, ContractType = @Type, Contract_Months = @Months, Salary = @Salary
-WHERE PlayerID = @Player
-COMMIT
+BEGIN TRY
+	BEGIN TRANSACTION
+		UPDATE ActivePlayers SET TeamID = @Team, DateSigned = @Date, ContractType = @Type, Contract_Months = @Months, Salary = @Salary
+		WHERE PlayerID = @Player
+	COMMIT TRANSACTION
+END TRY
+BEGIN CATCH
+	ROLLBACK TRANSACTION
+END CATCH
 
 /*EXECUTE THE PROCEDURE */
 EXEC spUpdateContract @Player = 3, @Team = 1, @Date = '2015', @Type = 'Loan', @Months = 24, @Salary = 245670.76
@@ -188,9 +201,20 @@ GO
 
 /****************************************************************************************************/
 
+CREATE VIEW vPlayersStats
+AS
+SELECT p.FirstName + ' ' + p.LastName AS Player, p.Nationality, DATEDIFF(year,  p.DateOfBirth, GETDATE()) AS Age ,p.Position, p.Footed, p.Active, 
+s.MatchesPlayed, s.TotalMinutes, s.Nineties, s.Goals, s.Assists, s.AvgDistancePerGame, a.AgentName
+FROM Players p
+INNER JOIN PlayersStats s ON p.PlayerID = s.PlayerID
+INNER JOIN Agents a ON  p.AgentID = a.AgentID
+
+CREATE TABLE TransferHistory(
+	TransferID INT IDENTITY(1,1) PRIMARY KEY NOT NULL,
+	PlayerID INT FOREIGN KEY REFERENCES Players(PlayerID),
+	Primary_TeamID INT FOREIGN KEY REFERENCES Teams(TeamID),
+	Secondary_TeamID INT FOREIGN KEY REFERENCES Teams(TeamID),
+	TransferDate DATE
+);
 
 
-
-
-CREATE VIEW view_PlayersStats
-AS SELECT P.FirstName + ' ' + P.LastName AS 'Name', 
