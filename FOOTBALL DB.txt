@@ -1,3 +1,14 @@
+Players
+
+
+
+- Makes players to be easily accessible to team managers looking for players
+- Team managers / scouts can easily scout players by checking the remaining time on their contracts
+- Scout can also depend on the players stats to look for players who can fit on their squad
+-   
+
+
+
 1. A PLAYER CREATES A PROFILE ON THE APP
 
    - DETAILS GET STORED IN THE PLAYERS TABLE OF THE DATABASE
@@ -15,4 +26,6 @@
 
      - Total 90 minutes each player completed will however be calculated using a User Defined Function and stored in the stats table.
 
-     - 
+     - The agents ca
+
+     -  A view will be executed to show info about a player's stats, showin the agent managing the player
