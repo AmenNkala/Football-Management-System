@@ -1,0 +1,18 @@
+1. A PLAYER CREATES A PROFILE ON THE APP
+
+   - DETAILS GET STORED IN THE PLAYERS TABLE OF THE DATABASE
+
+     * Also a player has to specify whether they have a team or not by eitheir selecting yes or no 
+       on the "Active" attribute,
+       Those who have a team, their team will get stored in the TEAMS database.
+     
+     - Those players who selected Yes on Active‎ will get to select their team, the date they signed 
+       with it, contract, salary etc. stored in a Table called ActivePlayers
+       in which their contracts with their teams are described.
+	
+     - Players statistics table will get updated immediately, by querying the selected team's database 
+       and Relevant data will be retrieved.
+
+     - Total 90 minutes each player completed will however be calculated using a User Defined Function and stored in the stats table.
+
+     - 
