@@ -4,28 +4,28 @@ CREATE DATABASE footballAgencyDB;
 
 USE footballAgencyDB;
 
+
+/*This query creates a tables of all the agents for the players*/
 CREATE TABLE Agents(
 	AgentID INT IDENTITY(1,1) PRIMARY KEY NOT NULL,
 	AgentName VARCHAR(120),
 	Email NVARCHAR(150) NULL,
 	ContactNumber VARCHAR(10) NULL,
 );
-/*A TABLE THAT STORES ALL PLAYERS */
+
+/*This query insert data into agents table*/
 INSERT INTO Agents
-Values('John', 'jd@gmail.com', '0746579832'),
-('Siya', 'sk@yahoo.com', '0834562272'),
+Values('NFL', 'jd@gmail.com', '0746579832'),
+('TTD', 'sk@yahoo.com', '0834562272'),
 ('Doc', 'dk@aol.com', '0112345673')
 GO
 
 
-
-
-
-/***************************************************************************************************************/
+/*This query creates a table for a player record*/
 CREATE TABLE Players(
 	PlayerID INT IDENTITY(1,1) PRIMARY KEY CLUSTERED NOT NULL,
-	LastName VARCHAR(120) NULL,
 	FirstName VARCHAR(120) NULL,
+	LastName VARCHAR(120) NULL,
 	Nationality VARCHAR(3) NULL,
 	DateOfBirth DATE NULL,
 	Position VARCHAR(2) NULL,
@@ -35,17 +35,15 @@ CREATE TABLE Players(
 );
 GO
 
+/*This query insert data into Player table*/
 INSERT INTO Players 
 VALUES ('Leon', 'Zulu', 'RSA', '1980-01-29', 'RW', 'Left', 'Yes',1),
 ('Peter', 'Shalulile', 'MAL', '1980-08-30', 'FW', 'Right', 'Yes',2),
 ('Melvin', 'Parker',  'RSA', '1982-04-19', 'FW', 'Right', 'Yes',2),
 ('Amen', 'Nkala',  'RSA', '1995-05-18', 'LW', 'Left', 'No',3),
 ('Bonga', 'Dube',  'RSA', '1984-07-19', 'RW', 'Right', 'No',1),
-('Andile','Dimba', 'RSA','1996-09-20', 'GK', 'Right', 'Yes',2)
-
-INSERT INTO Players 
-VALUES ('Duncan','Zungu', 'RSA','1982-04-04', 'LB', 'Left', 'Yes',1)
-
+('Andile','Dimba', 'RSA','1996-09-20', 'GK', 'Right', 'Yes',2),
+('Duncan','Zungu', 'RSA','1982-04-04', 'LB', 'Left', 'Yes',1)
 
 
 /*VIEW UNSIGNED PLAYERS*/
@@ -53,9 +51,6 @@ SELECT *
 	FROM Players
 	WHERE Active = 'Yes';
 GO
-
-
-
 
 
 /*A TABLE THAT STORES TEAMS WHICH PLAYERS HAVE PLAYED OR PLAY FOR*/
@@ -67,6 +62,8 @@ CREATE TABLE Teams(
 );	
 GO
 
+ALTER TABLE Teams
+ADD CONSTRAINT uc_Teams UNIQUE(TeamName);
 
 
 INSERT INTO Teams 
@@ -97,8 +94,9 @@ CREATE TABLE ActivePlayers(
 );
 GO
 
-
-
+ALTER TABLE ActivePlayers
+ADD CONSTRAINT uc_ActivePlyrs UNIQUE (PlayerID);
+GO
 
 CREATE OR ALTER FUNCTION dbo.calc_ContractExpDate( @DateSigned DATE, @Contract_Months INT)
 
@@ -108,7 +106,15 @@ BEGIN
 END;
 GO
 
+/*POPULATE THE ACTIVE PLAYERS TABLE*/
+TRUNCATE TABLE ActivePlayers;
+INSERT INTO ActivePlayers (PlayerID, TeamID, DateSigned, ContractType, Contract_Months, Salary)
+VALUES(2,2,'2020-05-09','Parent team',36, 1450000.00 ),
+(3,3,'2019-01-30','Parent team',36, 120000.00 ),
+(5,5,'2022-02-09','Loan',12, 450000.00 ),
+(7,2,'2021-10-01','Parent team', 24, 100000)
 
+GO
 
 CREATE OR ALTER PROCEDURE spUpdateContractExpiry
 AS
@@ -122,20 +128,6 @@ GO
 
 
 SELECT * FROM ActivePlayers;
-
-
-/*POPULATE THE ACTIVE PLAYERS TABLE*/
-
-INSERT INTO ActivePlayers 
-VALUES(2,2,'2020-05-09','Parent team',36, 1450000.00 ),
-(3,3,'2019-01-30','Parent team',36, 120000.00 ),
-(4,4,'2018-02-28','Parent team',36, 4500000.00 ),
-(6,5,'2022-04-11','Loan',12, 90000.00 ),
-(5,5,'2022-02-09','Loan',12, 450000.00 ),
-(7,2,'2021-10-01','Parent team', 24, 100000)
-
-GO
-
 
 
 /*A  Table to store data about all Players' statistics*/
@@ -203,12 +195,12 @@ GO
 
 CREATE OR ALTER VIEW vPlayersStats
 AS
-SELECT p.FirstName + ' ' + p.LastName AS Player, p.Nationality, DATEDIFF(year,  p.DateOfBirth, GETDATE()) AS Age ,p.Position, p.Footed, p.Active, 
-s.MatchesPlayed, s.TotalMinutes, s.Nineties, s.Goals, s.Assists, s.AvgDistancePerGame, a.AgentName
+SELECT p.FirstName + ' ' + p.LastName AS Player, p.Nationality, DATEDIFF(year,  p.DateOfBirth, GETDATE()) AS Age ,p.Position, p.Footed,
+ p.Active, s.MatchesPlayed, s.TotalMinutes, s.Nineties, s.Goals, s.Assists, s.AvgDistancePerGame, a.AgentName
 FROM Players p
-INNER JOIN PlayersStats s ON p.PlayerID = s.PlayerID
-INNER JOIN Agents a ON  p.AgentID = a.AgentID
-ORDER BY p.FirstName;
+FULL OUTER JOIN PlayersStats s ON p.PlayerID = s.PlayerID
+FULL OUTER JOIN Agents a ON  p.AgentID = a.AgentID
+ORDER BY p.FirstName OFFSET 0 ROWS;
 GO
 
 
@@ -272,11 +264,13 @@ GO
 
 CREATE OR ALTER VIEW vUnSignedPlayers
 AS
-SELECT  p.FirstName + ' ' + p.LastName AS Player, p.Nationality, DATEDIFF(year,  p.DateOfBirth, GETDATE()) AS Age ,p.Position, p.Footed, p.Active, 
+SELECT   p.FirstName + ' ' + p.LastName AS Player, p.Nationality, DATEDIFF(year,  p.DateOfBirth, GETDATE()) AS Age ,p.Position, p.Footed, 
 s.MatchesPlayed, s.TotalMinutes, s.Nineties, s.Goals, s.Assists, s.AvgDistancePerGame, a.AgentName
-FROM Players p
-INNER JOIN PlayersStats s ON p.PlayerID = s.PlayerID
-INNER JOIN Agents a ON  p.AgentID = a.AgentID
+FROM Players p 
+RIGHT JOIN PlayersStats s ON p.PlayerID = s.PlayerID 
+RIGHT JOIN Agents a ON  p.AgentID = a.AgentID
 WHERE p.Active = 'No'
 
 GO
+
+
