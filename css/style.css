@@ -1,0 +1,160 @@
+* {
+  text-decoration: none;
+}
+body {
+  margin: 0;
+  padding: 0;
+  font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
+    "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
+  box-sizing: border-box;
+}
+
+/*----------Sidebar Start---------------*/
+
+#sidebar {
+  width: 15%;
+  height: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  background-color: #cad2c5;
+}
+
+#logout {
+  width: 100%;
+  margin-top: auto;
+  align-self: flex-end;
+  background-color: #2f3e46;
+  border-radius: 0;
+  color: antiquewhite;
+  text-align: center;
+}
+
+#logout:hover {
+  color: whitesmoke;
+  text-shadow: 2px 2px 2px blue;
+}
+
+#home {
+  text-align: center;
+}
+
+.menuItem {
+  margin-left: 10px;
+  padding-left: 15px;
+  margin-bottom: 30px;
+  font-size: 25px;
+  color: #2f3e46;
+  border-radius: 25px 0 0 25px;
+}
+
+.menuItem:hover {
+  color: antiquewhite;
+  background-color: #84a98c;
+}
+
+.active {
+  background-color: #52796f;
+}
+
+/*----------Sidebar End---------------*/
+
+/*----------Main Start----------------*/
+
+main {
+  margin-left: 15%;
+  width: 85%;
+  height: 100vh;
+  background-color: #52796f;
+  overflow: hidden;
+}
+
+header {
+  width: 100%;
+  display: flex;
+  box-shadow: 0 4px 2px -2px rgb(46, 41, 41);
+  background: linear-gradient(to left, hsl(240, 5%, 41%), hsl(0, 0%, 100%));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+header h1 {
+  margin: auto;
+  justify-self: center;
+  text-transform: uppercase;
+
+  font-size: 6vmin;
+  line-height: 1.1;
+}
+
+header img {
+  margin-left: auto;
+  justify-self: flex-end;
+}
+
+#agencyPlayers {
+  margin-left: 10px;
+}
+
+#agencyPlayers h3 {
+  color: #ffffff;
+  background-color: #84a98c;
+  width: 500px;
+}
+
+#playerstable #playerDetails {
+  display: flex;
+  color: rgb(0, 0, 0);
+}
+
+#playerstable #playerDetails a strong {
+  color: white;
+}
+
+#playerstable {
+  width: 500px;
+}
+
+#playerstable th {
+  color: #cad2d6;
+}
+
+#playerstable tbody tr {
+  text-align: center;
+  color: #2f3e46;
+}
+
+#playerstable tbody tr:hover {
+  background-color: #84a98c;
+  cursor: pointer;
+}
+
+#playerOverlay {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgb(0, 0, 0, 0.9);
+  z-index: 2;
+}
+
+#playerOverlay strong {
+  color: red;
+  font-size: 1.2em;
+  float: right;
+  margin-right: 10px;
+  margin-top: 8px;
+  cursor: pointer;
+}
+
+#playerOverlay #playerInfo {
+  margin: 10px 0 0 10px;
+  float: left;
+}
+
+/*----------Main End------------------*/
