@@ -12,16 +12,21 @@ for (let i = 0; i < menuTabs.length; i++) {
   menuTabs[i].addEventListener("click", changeTab);
 }
 
-const playerOverlay = document.getElementById("playerOverlay");
-document.getElementById("closePlayerOverlay").addEventListener("click", (e) => {
-  playerOverlay.style.display = "none";
-});
+const tableBody = document.getElementById("playersTableBody") ?? null;
 
-const tableBody = document.getElementById("playersTableBody");
+if (tableBody !== null) {
+  tableBody.addEventListener("click", (e) => {
+    const targetElement = e.target;
+    if (targetElement.parentElement.classList.contains("table-entry")) {
+      window.location.href = "./agencyPlayer.html";
+    }
+  });
+}
 
-tableBody.addEventListener("click", (e) => {
-  const targetElement = e.target;
-  if (targetElement.parentElement.classList.contains("table-entry")) {
-    playerOverlay.style.display = "block";
-  }
-});
+const editPlayerBtn = document.getElementById("editPlayerBtn") ?? null;
+
+if (editPlayerBtn !== null) {
+  editPlayerBtn.addEventListener("click", () => {
+    window.location.href = "./agencyPlayerForm.html";
+  });
+}

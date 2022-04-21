@@ -1,0 +1,126 @@
+#playerOverlay {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgb(0, 0, 0, 0.9);
+  z-index: 2;
+  padding: 0 10px;
+}
+
+#closePlayerOverlay {
+  color: red;
+  font-size: 1.2em;
+  margin-left: auto;
+  justify-self: end;
+  margin-right: 20px;
+  margin-top: 8px;
+  cursor: pointer;
+}
+
+#agencyPlayerContent #playerInfo {
+  margin: 10px 0 0 10px;
+  height: fit-content;
+  background: linear-gradient(to left, hsl(240, 5%, 41%), hsl(0, 0%, 100%));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: flex;
+}
+
+#overlayHeader {
+  width: 100%;
+  display: flex;
+}
+
+#overlayContent {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+#playerOverlay #personalData {
+  width: 500px;
+}
+
+h2 {
+  background-color: #ffffff;
+  color: #000000;
+}
+
+#dataGrid,
+#transferHistoryGrid,
+#statsGrid {
+  display: grid;
+  background-color: #cfcccc;
+}
+
+#dataGrid,
+#transferHistory {
+  grid-template-columns: repeat(2, 1fr);
+  grid-auto-rows: auto;
+}
+
+#dataGrid .col-1 {
+  grid-column: 1;
+  margin: 5px 0;
+}
+
+#datagrid .col-1 {
+  grid-column: 2;
+}
+
+#dataGrid .col-1,
+#dataGrid .col-2 {
+  margin: 10px 0;
+}
+
+#playerStats {
+  margin: 0 5%;
+}
+
+#statsGrid {
+  grid-auto-columns: auto;
+  grid-template-rows: repeat(2, 1fr);
+}
+
+#statsGrid .row-1,
+#statsGrid .row-2,
+#transferHistoryGrid .row-1,
+#transferHistoryGrid .row-2 {
+  margin: 0 10px;
+  text-align: center;
+}
+
+#statsGrid .row-1 {
+  grid-row: 1;
+}
+
+#statsGrid .row-2 {
+  grid-row: 2;
+}
+
+#transferHistoryGrid .row-1 {
+  grid-row: 1;
+}
+#transferHistoryGrid .row-2 {
+  grid-row: 2;
+}
+
+#transferHistory {
+  flex: 1;
+}
+
+#trophies {
+  display: flex;
+}
+
+#trophies figure {
+  display: block;
+}
+
+#trophies figure figcaption {
+  color: #ffffff;
+  text-align: center;
+}
