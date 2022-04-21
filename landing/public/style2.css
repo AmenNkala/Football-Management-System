@@ -1,0 +1,262 @@
+* {
+  text-decoration: none;
+}
+body {
+  margin: 0;
+  padding: 0;
+  font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
+    "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
+  box-sizing: border-box;
+}
+
+/*----------Sidebar Start---------------*/
+
+#sidebar {
+  width: 15%;
+  height: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  background-color: #fff;
+}
+
+#logout {
+  width: 100%;
+  margin-top: auto;
+  align-self: flex-end;
+  background-color: #2f3e46;
+  border-radius: 0;
+  color: antiquewhite;
+  text-align: center;
+}
+
+#logout:hover {
+  color: whitesmoke;
+  text-shadow: 2px 2px 2px blue;
+}
+
+#home {
+  text-align: center;
+}
+
+.menuItem {
+  margin-left: 10px;
+  padding-left: 15px;
+  margin-bottom: 30px;
+  font-size: 25px;
+  color: #2f3e46;
+  border-radius: 25px 0 0 25px;
+}
+
+.menuItem:hover {
+  color: antiquewhite;
+  background-color: #139d8e;
+}
+
+.active {
+  background-color: #139d8e;
+}
+
+/*----------Sidebar End---------------*/
+
+/*----------Main Start----------------*/
+
+main {
+  margin-left: 15%;
+  width: 85%;
+  height: 100vh;
+  background-color: #139d8e;
+  overflow: hidden;
+}
+
+main header {
+  width: 100%;
+  display: flex;
+  box-shadow: 0 4px 2px -2px rgb(46, 41, 41);
+  background: linear-gradient(to left, hsl(240, 5%, 41%), hsl(0, 0%, 100%));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+header h1 {
+  margin: auto;
+  justify-self: center;
+  text-transform: uppercase;
+
+  font-size: 6vmin;
+  line-height: 1.1;
+}
+
+header img {
+  margin-left: auto;
+  justify-self: flex-end;
+}
+
+#agencyPlayers {
+  margin-left: 10px;
+}
+
+#agencyPlayers h3 {
+  color: #ffffff;
+  background-color: #84a98c;
+  width: 500px;
+}
+
+#playerstable #playerDetails {
+  display: flex;
+  color: rgb(0, 0, 0);
+}
+
+#playerstable #playerDetails a strong {
+  color: white;
+}
+
+#playerstable {
+  width: 500px;
+}
+
+#playerstable th {
+  color: #cad2d6;
+}
+
+#playerstable tbody tr {
+  text-align: center;
+  color: #2f3e46;
+}
+
+#playerstable tbody tr:hover {
+  background-color: #fff;
+  cursor: pointer;
+}
+
+/*----------Main End------------------*/
+
+/*----------agencyPlayer Start-------------*/
+#agencyPlayerContent {
+  display: flex;
+}
+
+#personalData {
+  width: 500px;
+}
+
+.player_tables h2 {
+  background-color: #ffffff;
+  color: #000000;
+}
+
+#dataGrid,
+#transferHistoryGrid,
+#statsGrid {
+  display: grid;
+  background-color: #cfcccc;
+}
+
+#dataGrid,
+#transferHistory {
+  grid-template-columns: repeat(2, 1fr);
+  grid-auto-rows: auto;
+}
+
+#dataGrid .col-1 {
+  grid-column: 1;
+  margin: 5px 0;
+}
+
+#datagrid .col-1 {
+  grid-column: 2;
+}
+
+#dataGrid .col-1,
+#dataGrid .col-2 {
+  margin: 10px 0;
+}
+
+#playerStats {
+  margin: 0 5%;
+}
+
+#statsGrid {
+  grid-auto-columns: auto;
+  grid-template-rows: repeat(2, 1fr);
+}
+
+#statsGrid .row-1,
+#statsGrid .row-2,
+#transferHistoryGrid .row-1,
+#transferHistoryGrid .row-2 {
+  margin: 0 10px;
+  text-align: center;
+}
+
+#statsGrid .row-1 {
+  grid-row: 1;
+}
+
+#statsGrid .row-2 {
+  grid-row: 2;
+}
+
+#transferHistoryGrid .row-1 {
+  grid-row: 1;
+}
+#transferHistoryGrid .row-2 {
+  grid-row: 2;
+}
+
+#transferHistory {
+  flex: 1;
+}
+
+#trophies {
+  display: flex;
+}
+
+#trophies figure {
+  display: block;
+}
+
+#trophies figure figcaption {
+  color: #ffffff;
+  text-align: center;
+}
+
+#trophies figure p {
+  background-color: #000000;
+  color: #ffffff;
+  text-align: center;
+  width: 100px;
+}
+
+#editPlayerBtn {
+  margin-top: auto;
+  height: fit-content;
+  align-self: baseline;
+  color: white;
+  background-color: #2f3e46;
+  margin: 10px 10px 0 0;
+  float: right;
+  width: 50 px;
+}
+
+#updateFormSection {
+  display: flex;
+  flex-direction: column;
+}
+
+#updatePlayerContent {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.panel section input,
+select {
+  float: right;
+  width: 180px;
+  text-align: center;
+}
+
+/*----------agencyPlayer End---------------*/ ;

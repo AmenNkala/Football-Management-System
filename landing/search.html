@@ -1,0 +1,66 @@
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+<input id="search-input" class="form-control" type="text">
+
+<table class="table ">
+    <tr>
+        <th  data-colname="name">Name</th>
+        <th  data-colname="age">Age</th>
+        <th  data-colname="date" >Date</th>
+    </tr>
+    <tbody id="myTable">
+        
+    </tbody>
+</table>
+
+
+<script>
+let myArray = [
+    {'name':'Michael', 'age':'30', 'date':'11/10/2020'},
+    {'name':'Mila', 'age':'32', 'date':'10/1/2021'},
+    {'name':'Paul', 'age':'29', 'date':'10/14/2021'},
+    {'name':'Dennis', 'age':'27', 'date':'11/29/2022'},
+    {'name':'Tim', 'age':'27', 'date':'3/12/2020'},
+    {'name':'Erik', 'age':'24', 'date':'10/31/2021'},
+]
+
+
+
+$('#search-input').on('keyup', function(){
+    let value = $(this).val();
+    console.log('value:', value);
+    let data = searchTable(value, myArray);
+    buildTable(data);
+})
+
+buildTable(myArray)
+
+function searchTable(value, data){
+    let filteredData = [];
+
+    for(let i=0; i < data.length; i++){
+        value = value.toLowerCase();
+        let name = data[i].name.toLowerCase();
+        let age = data[i].age;
+        if(name.includes(value) || age.includes(value)){
+            filteredData.push(data[i]);
+        }
+    }
+
+    return filteredData;
+}
+
+function buildTable(data){
+    let table = document.getElementById('myTable')
+    table.innerHTML = ''
+    for (let i = 0; i < data.length; i++){
+        let row = `<tr>
+                        <td>${data[i].name}</td>
+                        <td>${data[i].age}</td>
+                        <td>${data[i].date}</td>
+                   </tr>`;
+        table.innerHTML += row;  
+    }
+}
+
+</script>
