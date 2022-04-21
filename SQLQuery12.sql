@@ -3,7 +3,7 @@ GO
 
 IF NOT EXISTS(SELECT * sys.databases WHERE name='footballAgencyDB_BBD_')
   BEGIN
-    CREATE DATABASE footballAgencyDB_BBD_;
+    CREATE DATABASE SportsEvents;
  END;
 GO
 
@@ -21,100 +21,163 @@ GO
 -- CREATE TABLES
 
 /*This query creates a tables of all the agents for the players*/
+
+
+--AGENTS LOGIN DETAILS=====ENTRY POINT
+
+CREATE TABLE Agencies(
+
+	Agency_ID INT IDENTITY(100,1) PRIMARY KEY NOT NULL,
+	AgencyName VARCHAR(120)NOT NULL,
+	Physical_Address VARCHAR(250)NOT NULL,
+	Contact_Number VARCHAR(10) NOT NULL,
+	Email_address VARCHAR(100) NOT NULL
+);
+GO
+
 CREATE TABLE Agents(
 	AgentID INT IDENTITY(1,1) PRIMARY KEY NOT NULL,
-	AgentName VARCHAR(120)NOT NULL,
-	Email NVARCHAR(150) NOT NULL,
+	FirstName VARCHAR(120)NOT NULL,
+	LastName  VARCHAR(120)NOT NULL,
+	Physical_Address VARCHAR(250)NOT NULL,
+	Email_address NVARCHAR(150) NOT NULL,
 	ContactNumber VARCHAR(10) NOT NULL,
+	Agency_ID INT NOT NULL
+
+	CONSTRAINT fk_agencyID FOREIGN KEY (Agency_ID) REFERENCES Agencies(Agency_ID)
 );
 GO
 
 /*This query creates a table for a player record*/
+
+
+
+
+CREATE TABLE FootType(
+   FootID int identity(1,1) primary key not null,
+   NameFoot Varchar(5)
+);
+
+
+
+CREATE TABLE Activity_Status(
+	ActiveID INT IDENTITY(0,1) PRIMARY KEY NOT NULL,
+	ActivityState BIT NOT NULL,
+	ActivityStateDescr VARCHAR(10) NOT NULL
+);
+
+
+
+CREATE TABLE Positions(
+	 PositionID INT IDENTITY(10,1) primary key NOT NULL,
+	 PositionName VARCHAR(60) NOT NULL,
+	 positionNumber VARCHAR(2) NOT NULL
+);GO
+
+
+
+
+
+
 CREATE TABLE Players(
-	PlayerID INT IDENTITY(1,1) PRIMARY KEY CLUSTERED NOT NULL,
+	PlayerID INT IDENTITY(1,1) PRIMARY KEY NOT NULL,
 	FirstName VARCHAR(120) NOT NULL,
 	LastName VARCHAR(120) NOT NULL,
 	Nationality VARCHAR(3) NOT NULL,
 	DateOfBirth DATE NOT NULL,
-	Position VARCHAR(2) NOT NULL,
-	Footed VARCHAR(5) NOT NULL,
-	Active BIT NOT NULL,  
-	AgentID INT NOT NULL
 
-	CONSTRAINT fk_AgentID FOREIGN KEY (AgentID) REFERENCES Agents(AgentID)
+	PositionID INT NOT NULL,
+	ActiveID INT NOT NULL,  
+	AgentID INT NOT NULL,
+	FootID INT NOT NULL,
+
+	CONSTRAINT fk_position FOREIGN KEY (positionID) REFERENCES Positions(positionID),
+	CONSTRAINT fk_ActiveID FOREIGN KEY (ActiveID) REFERENCES Activity_Status(ActiveID),
+	CONSTRAINT fk_AgentID FOREIGN KEY (AgentID) REFERENCES Agents(AgentID),
+	CONSTRAINT fk_footID FOREIGN KEY (FootID) REFERENCES FootType(FootID)
 );
 GO
+
+
+
+
+
+
 
 /*A TABLE THAT STORES TEAMS WHICH PLAYERS HAVE PLAYED OR PLAY FOR*/
 
 CREATE TABLE Teams(
-	TeamID INT IDENTITY(1,1) PRIMARY KEY CLUSTERED NOT NULL,
+	TeamID INT IDENTITY(1,1) PRIMARY KEY NOT NULL,
 	TeamName VARCHAR(120) NOT NULL,
 	LeagueID INT,
 
-	CONSTRAINT fk_LeagueID FOREIGN KEY (LeagueID) REFERENCES League(LeagueID)
-	
+	CONSTRAINT fk_LeagueID FOREIGN KEY (LeagueID) REFERENCES League(LeagueID),
+	CONSTRAINT uc_Teams UNIQUE(TeamName)
 );	
 GO
+
 
 CREATE TABLE League(
     LeagueID INT IDENTITY(1,1) PRIMARY KEY NOT NULL,
 	LeagueName  VARCHAR(120) NOT NULL
 );
-
-ALTER TABLE Teams
-ADD CONSTRAINT uc_Teams UNIQUE(TeamName);
 GO
+
 
 
 /*A TABLE THAT STORES CONTRACT DETAILS ABOUT ALL ACTIVE PLAYERS / PLAYERS THAT ARE SIGNED.*/
 
 CREATE TABLE ActivePlayers(
-	Ac_ID INT IDENTITY(1,1) PRIMARY KEY CLUSTERED NOT NULL,
+	Ac_ID INT IDENTITY(1,1) PRIMARY KEY NOT NULL,
 	DateSigned DATE NOT NULL,
-	periodSigned INT NOT NULL,
+	PeriodSigned INT NOT NULL,
 	Salary MONEY NOT NULL,
 
-	contractID INT NOT NULL, 
+	ContractID INT NOT NULL, 
 	PlayerID INT NOT NULL,
 	TeamID INT NOT NULL,
 
-	CONSTRAINT fk_contractID FOREIGN KEY (contractID) REFERENCES ContractType(contractID)  ,
+	CONSTRAINT fk_contractID FOREIGN KEY (ContractID) REFERENCES ContractType(ContractID)  ,
 	CONSTRAINT fk_playerID  FOREIGN KEY (PlayerID) REFERENCES Players(PlayerID),
 	CONSTRAINT fk_teamID  FOREIGN KEY (TeamID) REFERENCES Teams(TeamID)
 );
 GO
 
 
-ALTER TABLE ActivePlayers
-ADD CONSTRAINT uc_ActivePlyrs UNIQUE (PlayerID);
-GO
-
-
 CREATE TABLE ContractType
  ( 
-	contractID INT IDENTITY(1,1) PRIMARY KEY NOT NULL,
-	typeOfContract VARCHAR(50) NOT NULL,
+	ContractID INT IDENTITY(1,1) PRIMARY KEY NOT NULL,
+	TypeOfContract VARCHAR(50) NOT NULL,
 
 );
+
+
 
 CREATE TABLE PlayerTransferHistory(
 	TransferID INT IDENTITY(1,1) PRIMARY KEY NOT NULL,
 	PlayerID INT FOREIGN KEY REFERENCES Players(PlayerID) NOT NULL,
-	Primary_TeamID INT FOREIGN KEY REFERENCES Teams(TeamID) NOT NULL,
-	Secondary_TeamID INT FOREIGN KEY REFERENCES Teams(TeamID) NOT NULL,
+	Primary_TeamID INT NOT NULL,
+	Secondary_TeamID INT NOT NULL,
 	TransferDate DATE NOT NULL
+
+
+	CONSTRAINT fk_teamThePlayerComesFrom FOREIGN KEY (Primary_TeamID) REFERENCES  Teams(TeamID),
+	CONSTRAINT fk_teamThePlayerJoins FOREIGN KEY (Secondary_TeamID) REFERENCES  Teams(TeamID)
 );
 GO
 
 CREATE TABLE PlayersStats(
 	StatID INT IDENTITY(1,1) PRIMARY KEY NOT NULL,
-	PlayerID INT FOREIGN KEY REFERENCES Players(PlayerID) NOT NULL,
 	MatchesPlayed SMALLINT NOT NULL,
 	TotalMinutes INT NOT NULL,
 	Nineties SMALLINT NOT NULL,
 	Goals TINYINT NOT NULL,
-	Assists SMALLINT NOT NULL
+	Assists SMALLINT NOT NULL,
+
+	PlayerID INT NOT NULL,
+
+	CONSTRAINT fk_PlayerID FOREIGN KEY(PlayerID) REFERENCES Players(PlayerID)
+
 );
 GO
 
@@ -128,6 +191,14 @@ GO
 --2. INSERT INTO TABLES
 --=======================
 
+
+INSERT  INTO Agencies
+VALUES('DMT Sporting'),
+('Total Sporting'),
+('Jay & Jay Solutions')
+GO
+
+
 /*This query insert data into agents table*/
 INSERT INTO Agents
 Values('NFL', 'jd@gmail.com', '0746579832'),
@@ -136,15 +207,47 @@ Values('NFL', 'jd@gmail.com', '0746579832'),
 GO
 
 
+
+INSERT INTO Positions
+VALUES
+('Goalkeeper', 1),
+('Striker', 9),
+('Defender', 5),
+('Right back', 2);
+GO
+
+
+INSERT INTO ContractType
+VALUES
+('PARENT TEAM'),
+('ON LOAN');
+GO
+
+
+INSERT INTO Activity_Status
+VALUES
+(0, 'NOT ACTIVE'),
+(1, 'ACTIVE');
+GO
+
+
+INSERT INTO FootType
+VALUES
+('RIGHT'),
+('LEFT');
+GO
+
+
+
 /*This query insert data into Player table*/
 INSERT INTO Players 
-VALUES ('Leon', 'Zulu', 'RSA', '1980-01-29', 'RW', 'Left', 'Yes',1),
-('Peter', 'Shalulile', 'MAL', '1980-08-30', 'FW', 'Right', 'Yes',2),
-('Melvin', 'Parker',  'RSA', '1982-04-19', 'FW', 'Right', 'Yes',2),
-('Amen', 'Nkala',  'RSA', '1995-05-18', 'LW', 'Left', 'No',3),
-('Bonga', 'Dube',  'RSA', '1984-07-19', 'RW', 'Right', 'No',1),
-('Andile','Dimba', 'RSA','1996-09-20', 'GK', 'Right', 'Yes',2),
-('Duncan','Zungu', 'RSA','1982-04-04', 'LB', 'Left', 'Yes',1)
+VALUES ('Leon', 'Zulu', 'RSA', '1980-01-29', 5, 0, 3,1),
+('Peter', 'Shalulile', 'MAL', '1980-08-30', 8, 1, 1,2),
+('Melvin', 'Parker',  'RSA', '1982-04-19', 11, 1, 4,2),
+('Amen', 'Nkala',  'RSA', '1995-05-18', 9, 0, 1,2),
+('Bonga', 'Dube',  'RSA', '1984-07-19', 2, 1, 2,1);
+GO
+
 
 INSERT INTO Teams 
 VALUES ('Happy Heart', 'Vodacom challenge'),
@@ -178,21 +281,6 @@ GO
 INSERT INTO PlayersStats (PlayerID,MatchesPlayed,TotalMinutes,Goals,Assists,AvgDistancePerGame)
 VALUES(7,26,2338,2,1,678)
 GO
-
-
---**************************************************************************************************************************************
-
-
-
-
-
-
-/*VIEW UNSIGNED PLAYERS*/
-SELECT *
-	FROM Players
-	WHERE Active = 'Yes';
-GO
-
 
 
 --**************************************************************************************************************************************
@@ -311,8 +399,8 @@ AS
 SELECT p.FirstName + ' ' + p.LastName AS Player, p.Nationality, DATEDIFF(year,  p.DateOfBirth, GETDATE()) AS Age ,p.Position, p.Footed,
  p.Active, s.MatchesPlayed, s.TotalMinutes, s.Nineties, s.Goals, s.Assists, s.AvgDistancePerGame, a.AgentName
 FROM Players p
-FULL OUTER JOIN PlayersStats s ON p.PlayerID = s.PlayerID
-FULL OUTER JOIN Agents a ON  p.AgentID = a.AgentID
+LEFT JOIN PlayersStats s ON p.PlayerID = s.PlayerID
+LEFT JOIN Agents a ON  p.AgentID = a.AgentID
 ORDER BY p.FirstName OFFSET 0 ROWS;
 GO
 
